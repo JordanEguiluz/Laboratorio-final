@@ -11,4 +11,4 @@ jobs:
 
     - name: Prueba 1 compilacion
       run: |
-      echo "Prueba de compilacion de laboratorio final"
+        echo "Prueba de compilacion de laboratorio final"
