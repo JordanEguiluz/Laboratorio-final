@@ -1,0 +1,13 @@
+name: workflows
+runs-on:
+  push:
+    branches:
+      - feat-laboratorio
+
+jobs:
+  build: ubuntu-lastest
+  steps:
+
+  - name: Prueba 1 compilacion
+    run: |
+      echo "Prueba de compilacion de laboratorio final"
