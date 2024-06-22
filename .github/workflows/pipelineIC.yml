@@ -1,13 +1,14 @@
 name: workflows
-runs-on:
+on:
   push:
     branches:
       - feat-laboratorio
 
 jobs:
-  build: ubuntu-lastest
-  steps:
+  Build:
+    runs-on: ubuntu-lastest
+    steps:
 
-  - name: Prueba 1 compilacion
-    run: |
+    - name: Prueba 1 compilacion
+      run: |
       echo "Prueba de compilacion de laboratorio final"
