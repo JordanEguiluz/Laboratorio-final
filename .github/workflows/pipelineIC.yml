@@ -12,3 +12,25 @@ jobs:
     - name: Prueba 1 compilacion
       run: |
         echo "Prueba de compilacion de laboratorio final"
+
+    - name: Build
+      run: | 
+        chmod 777 gradlew
+        ./gradlew build
+
+    - name: Validando existencia de proyecto en SonarCloud
+      id: validateProjectOnSonar
+      run: |
+        #pwd
+        set +e
+        curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' -d 'name=${{ github.event.repository.name }}' -d 'project=${{ github.event.repository.name }}' -d 'organization=curso-devsecops-usach-test' -d 'visibility=public'
+        if [ $? -ne 0 ]; then
+          echo "Proyecto ya existe en Sonarcloud"
+          echo "::set-output name=proyectoExiste::1"
+        else
+          echo "Proyecto ${{ github.event.repository.name }} creado exitosamente en Sonarcloud"
+          
+          echo "Se establece rama main como rama por defecto"
+          curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' -d 'name=main' -d 'project=${{ github.event.repository.name }}'
+        fi
+        set -e
