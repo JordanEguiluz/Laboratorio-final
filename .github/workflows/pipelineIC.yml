@@ -4,61 +4,18 @@ on:
     branches:
       - feat-laboratorio
 
-jobs:
-  Build:
+jobs:        
+  SAST:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Prueba 1 compilacion
-      run: |
-        echo "Prueba de compilacion de laboratorio final"
-
-
-    - name: Validando existencia de proyecto en SonarCloud
-      id: validateProjectOnSonar
-      run: |
-        #pwd
-        set +e
-        curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' -d 'name=${{ github.event.repository.name }}' -d 'project=${{ github.event.repository.name }}' -d 'organization=curso-devsecops-pipeline' -d 'visibility=public'
-        if [ $? -ne 0 ]; then
-          echo "Proyecto ya existe en Sonarcloud"
-          echo "::set-output name=proyectoExiste::1"
-        else
-          echo "Proyecto ${{ github.event.repository.name }} creado exitosamente en Sonarcloud"
-          
-          echo "Se establece rama main como rama por defecto"
-          curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' -d 'name=main' -d 'project=${{ github.event.repository.name }}'
-        fi
-        set -e
-    - name: Validando tipo de proyecto
-      id: tipoProyecto
-      if: steps.validateProjectOnSonar.outputs.proyectoExiste == '1'
-      run: |
-        pwd
-        ls -R
-        if [ -f "build.gradle" ]
-        then
-          echo "Proyecto Java"
-          if grep -q 'id "org.sonarqube" version "3.3"' build.gradle
-          then
-            echo "El plugin de SonarCloud ya está presente en build.gradle"
-          else
-            sed -i '/id '\''java'\''/a \ \ \ \ id '\''org.sonarqube'\'' version '\''3.3'\''' build.gradle
-            echo "El plugin de SonarCloud no estaba presente y se ha sido añadido a build.gradle"
-            cat build.gradle
-          fi
-
-        else
-          echo "Tipo de proyecto desconocido"
-        fi
-
-
-    
-    - name: Run SonarQube analysis
-      run: |
-        ./gradlew sonarqube \
-        -Dsonar.projectKey=${{ github.event.repository.name }} \
-        -Dsonar.organization=curso-devsecops-pipeline \
-        -Dsonar.host.url=https://sonarcloud.io \
-        -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-        -Dsonar.branch.name=
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'adopt'
+    - name: Set up NPM 
+      uses: actions/setup-java@v2
+      with:
+        npm-version: '16'
+        distribution: 'adopt'
