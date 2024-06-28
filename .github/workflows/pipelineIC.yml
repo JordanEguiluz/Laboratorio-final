@@ -98,14 +98,16 @@ jobs:
       - name: Build
         run: |
           npm run build
+      
+      - name: Run npm audit fix
+        run: npm audit fix
 
       - name: Run npm audit
         run: npm audit --audit-level=moderate
         env:
           CI: true
       
-      - name: Run npm audit fix
-        run: npm audit fix
+      
 
 
       - name: Upload npm audit report
