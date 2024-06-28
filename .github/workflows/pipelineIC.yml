@@ -97,19 +97,16 @@ jobs:
         run: |
           npm run build
 
-      - name: Dependency Check
-        uses: dependency-check/Dependency-Check_Action@1.1.0
+      - name: Run npm audit
+        run: npm audit --audit-level=high
         env:
-          JAVA_HOME: /opt/jdk
-        id: Depcheck
+          CI: true
+
+      - name: Upload npm audit report
+        uses: actions/upload-artifact@v2
         with:
-          project: '${{ github.event.repository.name }}'
-          path: '.'
-          format: 'HTML'
-          out: 'reports'
-          args: >
-            --failOnCVSS 7
-            --enableRetired
+          name: npm-audit-report
+          path: npm-debug.log
 
       - name: Upload Dependency Check report
         uses: actions/upload-artifact@master
