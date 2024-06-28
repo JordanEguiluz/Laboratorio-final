@@ -60,7 +60,7 @@ jobs:
 
     - name: Install SonarCloud Scanner
       locally
-	      run: npm install sonar-scanner
+	    run: npm install sonar-scanner
       --save-dev
 
     - name: SonarQube Scan
