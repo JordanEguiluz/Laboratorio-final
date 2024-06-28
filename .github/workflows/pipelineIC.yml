@@ -69,50 +69,50 @@ jobs:
         -Dsonar.branch.name=feat-laboratorio
 
   #--------------------- SCA -------------------------------------------
-SCA:
-  needs: SAST
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+  SCA:
+    needs: SAST
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'  # Ajusta la versión de Node.js según sea necesario
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Ajusta la versión de Node.js según sea necesario
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build
-      run: |
-        npm run build
+      - name: Build
+        run: |
+          npm run build
 
-    - name: Dependency Check
-      uses: dependency-check/Dependency-Check_Action@1.1.0
-      env:
-        JAVA_HOME: /opt/jdk
-      id: Depcheck
-      with:
-        project: '${{ github.event.repository.name }}'
-        path: '.'
-        format: 'HTML'
-        out: 'reports'
-        args: >
-          --failOnCVSS 7
-          --enableRetired
+      - name: Dependency Check
+        uses: dependency-check/Dependency-Check_Action@1.1.0
+        env:
+          JAVA_HOME: /opt/jdk
+        id: Depcheck
+        with:
+          project: '${{ github.event.repository.name }}'
+          path: '.'
+          format: 'HTML'
+          out: 'reports'
+          args: >
+            --failOnCVSS 7
+            --enableRetired
 
-    - name: Upload Dependency Check report
-      uses: actions/upload-artifact@master
-      with:
-        name: Depcheck report
-        path: ${{ github.workspace }}/reports
+      - name: Upload Dependency Check report
+        uses: actions/upload-artifact@master
+        with:
+          name: Depcheck report
+          path: ${{ github.workspace }}/reports
 
-    - name: Upload Artifact (built application)
-      uses: actions/upload-artifact@master
-      with:
-        name: Built App
-        path: ${{ github.workspace }}/dist  # Ajusta la ruta según donde se genere el build de tu aplicación
+      - name: Upload Artifact (built application)
+        uses: actions/upload-artifact@master
+        with:
+          name: Built App
+          path: ${{ github.workspace }}/dist  # Ajusta la ruta según donde se genere el build de tu aplicación
 
 
    
