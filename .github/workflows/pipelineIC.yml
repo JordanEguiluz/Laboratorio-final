@@ -58,10 +58,8 @@ jobs:
 #        unzip sonar-scanner-cli-4.6.2.2472-linux.zip
 #        export PATH="$PATH:$(pwd)/sonar-scanner-4.6.2.2472-linux/bin"
 
-    - name: Install SonarCloud Scanner
-      locally
-	    run: npm install sonar-scanner
-      --save-dev
+    - name: Install SonarCloud Scanner locally
+	    run: npm install sonar-scanner --save-dev
 
     - name: SonarQube Scan
       env:
