@@ -1,4 +1,5 @@
 name: workflows
+
 on:
   push:
     branches:
@@ -8,7 +9,6 @@ jobs:
   SAST:
     runs-on: ubuntu-latest
     steps:
-
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -35,37 +35,33 @@ jobs:
     - name: Validando existencia de proyecto en SonarCloud
       id: validateProjectOnSonar
       run: |
-        #pwd
-        #ls -R
         set +e
-        curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' -d 'name=${{ github.event.repository.name }}' -d 'project=${{ github.event.repository.name }}' -d 'organization=curso-devsecops-pipeline' -d 'visibility=public'
+        curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' \
+          -d 'name=${{ github.event.repository.name }}' \
+          -d 'project=${{ github.event.repository.name }}' \
+          -d 'organization=curso-devsecops-pipeline' \
+          -d 'visibility=public'
         if [ $? -ne 0 ]; then
           echo "Proyecto ya existe en Sonarcloud"
-          echo "::set-output name=proyectoExiste::1"
+          echo "proyectoExiste=1" >> $GITHUB_ENV
         else
           echo "Proyecto ${{ github.event.repository.name }} creado exitosamente en Sonarcloud"
           
           echo "Se establece rama main como rama por defecto"
-          curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' -d 'name=main' -d 'project=${{ github.event.repository.name }}'
+          curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' \
+            -d 'name=main' \
+            -d 'project=${{ github.event.repository.name }}'
         fi
         set -e
 
-#    - name: Install SonarQube Scanner
-#     run: |
-#        sudo apt-get update
-#        sudo apt-get install -y openjdk-11-jre
-#        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-#        unzip sonar-scanner-cli-4.6.2.2472-linux.zip
-#        export PATH="$PATH:$(pwd)/sonar-scanner-4.6.2.2472-linux/bin"
-
     - name: Install SonarCloud Scanner locally
-	    run: npm install sonar-scanner --save-dev
+      run: npm install sonar-scanner --save-dev
 
     - name: SonarQube Scan
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        sonar-scanner \
+        ./node_modules/.bin/sonar-scanner \
         -Dsonar.projectKey=${{ github.event.repository.name }} \
         -Dsonar.organization=curso-devsecops-pipeline \
         -Dsonar.host.url=https://sonarcloud.io \
