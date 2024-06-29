@@ -117,7 +117,7 @@ jobs:
          
       - name: Run OWASP Dependency-Check
         run: |
-          dependency-check --project "Laboratorio-final" --out ${{ github.workspace }}/ dist --scan .
+          dependency-check --project  ${{ github.workspace }} --out ${{ github.workspace }}/ dist --scan .
       
       - name: Upload npm audit report
         uses: actions/upload-artifact@v2
