@@ -111,15 +111,17 @@ jobs:
         run: |
           curl -LJO https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.3/dependency-check-6.5.3-release.zip
           unzip dependency-check-6.5.3-release.zip -d dependency-check
-          sudo mv dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
-          sudo chmod +x /usr/local/bin/dependency-check
-
-      - name: Run OWASP Dependency-Check
-        run: |
-          dependency-check --project "Laboratorio-final" --out ${{ github.workspace }}/reports --scan .
 
       - name: Debug - List files in reports directory
         run: ls -la ${{ github.workspace }}/reports
+
+
+      - name: Debug - List files in reports directory
+        run: ls -la ${{ github.workspace }}/reports
+         
+      - name: Run OWASP Dependency-Check
+        run: |
+          dependency-check --project "Laboratorio-final" --out ${{ github.workspace }}/reports --scan .
       
       - name: Upload npm audit report
         uses: actions/upload-artifact@v2
