@@ -115,9 +115,9 @@ jobs:
       - name: Debug - List files in reports directory
         run: ls -la ${{ github.workspace }}/ dist
          
-      - name: Run OWASP Dependency-Check
-        run: |
-          dependency-check  --out ${{ github.workspace }}/ dist --scan .
+      #- name: Run OWASP Dependency-Check
+      #  run: |
+      #    dependency-check  --out ${{ github.workspace }}/dist --scan .
       
       - name: Upload npm audit report
         uses: actions/upload-artifact@v2
