@@ -113,11 +113,12 @@ jobs:
           unzip dependency-check-6.5.3-release.zip -d dependency-check
 
       - name: Debug - List files in reports directory
-        run: ls -la ${{ github.workspace }}/
-         
+        run: ls -la ${{ github.workspace }}
+
       - name: Run OWASP Dependency-Check
         run: |
-          dependency-check --project '${{ github.event.repository.name }}' --out "${{ github.workspace }}/dist" --scan .
+          dependency-check --project "${{ github.repository }}" --out "${{ github.workspace }}/dist" --scan .
+
       
       - name: Upload npm audit report
         uses: actions/upload-artifact@v2
