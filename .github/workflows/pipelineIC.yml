@@ -117,8 +117,8 @@ jobs:
 
     - name: Run OWASP Dependency-Check
       run: |
-        .dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports"
-      # ruta correcta para hacer el scan .dependency-check/dependency-check/bin/dependency-check.sh
+        ./dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports"
+      # ruta correcta para hacer el scan ./dependency-check/dependency-check/bin/dependency-check.sh
     - name: Debug - List files in reports directory
       run: ls -la ${{ github.workspace }}/reports
 
