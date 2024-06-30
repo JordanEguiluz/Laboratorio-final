@@ -72,9 +72,9 @@ jobs:
   #--------------------- SCA -------------------------------------------
 
   SCA:
-  needs: SAST
-  runs-on: ubuntu-latest
-  steps:
+    needs: SAST
+    runs-on: ubuntu-latest
+    steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
