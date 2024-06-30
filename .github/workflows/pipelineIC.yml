@@ -109,7 +109,7 @@ jobs:
 
     - name: Install OWASP Dependency-Check
       run: |
-        curl -LJO https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.3/dependency-check-6.5.3-release.zip
+        curl -LJO https://github.com/jeremylong/DependencyCheck/releases/download/v7.0.3/dependency-check-7.0.3-release.zip
         unzip dependency-check-6.5.3-release.zip -d dependency-check
 
     - name: Debug - List files in dependency-check directory
