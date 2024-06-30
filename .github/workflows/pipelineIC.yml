@@ -92,8 +92,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Ensure permissions dependency-check
-        run: chmod 644 dependency-check.sh
+      #- name: Ensure permissions dependency-check
+      #  run: chmod 644 dependency-check.sh
 
       - name: Build
         run: |
@@ -131,9 +131,6 @@ jobs:
           name: Depcheck report
           path: ${{ github.workspace }}/
 
-     
-
-      
       - name: Upload Artifact (built application)
         uses: actions/upload-artifact@master
         with:
