@@ -93,9 +93,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      #- name: Ensure permissions dependency-check
-      #  run: chmod 644 dependency-check.sh
-
       - name: Build
         run: |
           npm run build
