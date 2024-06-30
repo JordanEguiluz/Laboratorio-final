@@ -108,11 +108,7 @@ jobs:
         env:
           CI: true
 
-      - name: Upload npm audit report
-        uses: actions/upload-artifact@v2
-        with:
-          name: npm-audit-report
-          path: ${{ github.workspace }}/
+
 
       - name: Install OWASP Dependency-Check
         run: |
@@ -126,6 +122,12 @@ jobs:
         run: |
           dependency-check --scan . --project "${{ github.repository.name }}" --out "${{ github.workspace }}/"
           path: ${{ github.workspace }}/
+
+      - name: Upload npm audit report
+        uses: actions/upload-artifact@v2
+        with:
+          name: npm-audit-report
+          path: ${{ github.repository.name }}/
         
       - name: Upload Dependency-Check report
         uses: actions/upload-artifact@master
