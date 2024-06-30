@@ -117,21 +117,21 @@ jobs:
 
       - name: Run OWASP Dependency-Check
         run: |
-          dependency-check.sh --project "${{ github.repository }}" --out "${{ github.workspace }}/" --scan "${{ github.workspace }}/"
+          dependency-check --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/" --scan .
+        
+      - name: Upload Dependency-Check report
+        uses: actions/upload-artifact@master
+        with:
+          name: Depcheck report
+          path: ${{ github.workspace }}/
 
-      
       - name: Upload npm audit report
         uses: actions/upload-artifact@v2
         with:
           name: npm-audit-report
           path: ${{ github.workspace }}/
 
-      - name: Upload Dependency Check report
-        uses: actions/upload-artifact@master
-        with:
-          name: Depcheck report
-          path: ${{ github.workspace }}/
-
+      
       - name: Upload Artifact (built application)
         uses: actions/upload-artifact@master
         with:
