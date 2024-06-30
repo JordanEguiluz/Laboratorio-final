@@ -132,7 +132,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: npm-audit-report
-        path: npm-debug.log
+        path: ${{ github.workspace }}/drop
 
     - name: Upload Dependency-Check report
       uses: actions/upload-artifact@v2
