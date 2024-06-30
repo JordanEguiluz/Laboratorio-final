@@ -108,6 +108,9 @@ jobs:
         env:
           CI: true
 
+      - name: Remove yarn.lock to avoid conflicts
+      run: rm -f yarn.lock #Se remueve archivo yarm.lock ya que choca con npm    
+
       - name: Install OWASP Dependency-Check
         run: |
           curl -LJO https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.3/dependency-check-6.5.3-release.zip
