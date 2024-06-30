@@ -104,7 +104,7 @@ jobs:
       env:
         CI: true
 
-    - name: Remove yarn.lock to avoid conflicts
+    - name: Remove yarn.lock para evitar conflictos
       run: rm -f yarn.lock
 
     - name: Install OWASP Dependency-Check
@@ -118,8 +118,10 @@ jobs:
     - name: Run OWASP Dependency-Check
       run: |
         ./dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports" \ 
-        --disableAssembly --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec
+        --disableAssembly --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec 
+      # disable se desahabilitaron disparadores no necesarios para el proyecto 
       # ruta correcta para hacer el scan ./dependency-check/dependency-check/bin/dependency-check.sh
+
     - name: Debug - List files in reports directory
       run: ls -la ${{ github.workspace }}/reports
 
@@ -135,8 +137,8 @@ jobs:
         name: Depcheck report
         path: ${{ github.workspace }}/reports
 
-    #- name: Upload Artifact (built application)
-    #  uses: actions/upload-artifact@v2
-    #  with:
-    #    name: Built App
-    #    path: ${{ github.workspace }}/dist  # Ajusta la ruta según donde se genere el build de tu aplicación
+    - name: Upload Artifact (built application)
+      uses: actions/upload-artifact@v2
+      with:
+        name: Built App
+        path: ${{ github.workspace }}/drop  # Ajusta la ruta según donde se genere el build de tu aplicación
