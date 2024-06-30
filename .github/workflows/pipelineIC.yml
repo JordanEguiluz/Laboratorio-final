@@ -120,8 +120,8 @@ jobs:
 
     - name: Run OWASP Dependency-Check
       run: |
-        ./dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports" \ 
-         --disableAssembly --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec 
+        ./dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports" \
+        --disableAssembly --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec 
       # disable se desahabilitaron disparadores no necesarios para el proyecto 
       # ruta correcta para hacer el scan ./dependency-check/dependency-check/bin/dependency-check.sh
 
