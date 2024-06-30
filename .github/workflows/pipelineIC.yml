@@ -132,7 +132,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: npm-audit-report
-        path: ${{ github.workspace }}/drop
+        path: ${{ github.workspace }}/dist
 
     - name: Upload Dependency-Check report
       uses: actions/upload-artifact@v2
@@ -144,4 +144,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: Built App
-        path: ${{ github.workspace }}/drop  # Ajusta la ruta según donde se genere el build de tu aplicación
+        path: ${{ github.workspace }}/dist  # Ajusta la ruta según donde se genere el build de tu aplicación
