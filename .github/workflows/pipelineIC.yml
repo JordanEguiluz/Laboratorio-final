@@ -124,6 +124,7 @@ jobs:
       - name: Run OWASP Dependency-Check
         run: |
           dependency-check --scan . --project "${{ github.repository.name }}" --out "${{ github.workspace }}/"
+          path: ${{ github.workspace }}/
         
       - name: Upload Dependency-Check report
         uses: actions/upload-artifact@master
