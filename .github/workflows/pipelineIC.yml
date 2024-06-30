@@ -27,14 +27,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Remove yarn.lock para evitar conflictos
-        run: rm -f yarn.lock
-
       - name: Install dependencies
         run: npm install
 
       - name: Build
         run: npm run build
+
+      - name: Remove yarn.lock para evitar conflictos
+        run: rm -f yarn.lock
 
       - name: Validando existencia de proyecto en SonarCloud
         id: validateProjectOnSonar
