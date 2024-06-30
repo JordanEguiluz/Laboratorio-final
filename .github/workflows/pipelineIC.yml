@@ -118,11 +118,6 @@ jobs:
     - name: Debug - List files in dependency-check directory
       run: ls -la dependency-check
 
-    - name: Disable disparadores ineccesarios
-      run: |
-        ./dependency-check/dependency-check/bin/dependency-check.sh --project "${{ github.repository.name }}"
-        --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec 
-
     - name: Run OWASP Dependency-Check
       run: |
         ./dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports" \ 
