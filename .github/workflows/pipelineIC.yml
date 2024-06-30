@@ -71,8 +71,8 @@ jobs:
 
   #--------------------- SCA -------------------------------------------
 
-    SCA:
-    needs: SAST
+    CA:
+    needs:  SAST
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
