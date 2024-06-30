@@ -70,7 +70,8 @@ jobs:
         -Dsonar.branch.name=feat-laboratorio
 
   #--------------------- SCA -------------------------------------------
-SCA:
+  
+  SCA:
     needs: SAST
     runs-on: ubuntu-latest
     steps:
