@@ -121,7 +121,7 @@ jobs:
     - name: Run OWASP Dependency-Check
       run: |
         ./dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports" \ 
-        --nvdApiKey'91c36c81-6ca9-47b8-aa89-6b3e0d60be9a' --disableAssembly --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec 
+        --nvdApiKey:"91c36c81-6ca9-47b8-aa89-6b3e0d60be9a" --disableAssembly --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec 
       # disable se desahabilitaron disparadores no necesarios para el proyecto 
       # ruta correcta para hacer el scan ./dependency-check/dependency-check/bin/dependency-check.sh
 
