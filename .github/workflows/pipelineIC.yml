@@ -87,7 +87,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16' # Ajusta la versión de Node.js según sea necesario
+          node-version: =>16 # Ajusta la versión de Node.js según sea necesario
           cache: 'npm'  
 
       - name: Install dependencies
@@ -104,11 +104,9 @@ jobs:
         run: npm audit fix
 
       - name: Run npm audit
-        run: npm audit --audit-level=hight
+        run: npm audit --audit-level=high
         env:
           CI: true
-
-
 
       - name: Install OWASP Dependency-Check
         run: |
@@ -116,24 +114,26 @@ jobs:
           unzip dependency-check-6.5.3-release.zip -d dependency-check
 
       - name: Debug - List files in reports directory
-        run: ls -la ${{ github.workspace }}
+        run: ls -la dependency-check
 
       - name: Run OWASP Dependency-Check
         run: |
-          dependency-check --scan . --project "${{ github.repository.name }}" --out "${{ github.workspace }}/"
-          path: ${{ github.workspace }}/
+          dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository.name }}" --out "${{ github.workspace }}/reports"
+
+      - name: Debug - List files in reports directory
+        run: ls -la ${{ github.workspace }}/reports
 
       - name: Upload npm audit report
         uses: actions/upload-artifact@v2
         with:
           name: npm-audit-report
-          path: ${{ github.repository.name }}/
+          path: npm-debug.log
         
       - name: Upload Dependency-Check report
         uses: actions/upload-artifact@master
         with:
           name: Depcheck report
-          path: ${{ github.workspace }}/
+          path: ${{ github.workspace }}/reports
 
       #- name: Upload Artifact (built application)
       #  uses: actions/upload-artifact@master
