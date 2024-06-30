@@ -112,8 +112,8 @@ jobs:
 
     - name: Install OWASP Dependency-Check
       run: |
-        curl -LJO https://github.com/jeremylong/DependencyCheck/releases/download/v9.0.8/dependency-check-9.0.8-release.zip
-        unzip dependency-check-9.0.8-release.zip -d dependency-check
+        curl -LJO https://github.com/jeremylong/DependencyCheck/releases/download/v8.2.0/dependency-check-8.2.0-release.zip
+        unzip dependency-check-8.2.0-release.zip -d dependency-check 
 
     - name: Debug - List files in dependency-check directory
       run: ls -la dependency-check
@@ -121,7 +121,7 @@ jobs:
     - name: Run OWASP Dependency-Check
       run: |
         ./dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports" \ 
-        --nvdApiKey:"91c36c81-6ca9-47b8-aa89-6b3e0d60be9a" --disableAssembly --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec 
+        --nvdApiKey="91c36c81-6ca9-47b8-aa89-6b3e0d60be9a" --disableAssembly --disablePyDist --disableNodeAudit --disableNodeAuditYarn --disableCentral --disableNuspec 
       # disable se desahabilitaron disparadores no necesarios para el proyecto 
       # ruta correcta para hacer el scan ./dependency-check/dependency-check/bin/dependency-check.sh
 
