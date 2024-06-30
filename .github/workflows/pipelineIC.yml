@@ -71,7 +71,7 @@ jobs:
 
   #--------------------- SCA -------------------------------------------
   SCA:
-    needs: SAST
+    #needs: SAST
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -92,8 +92,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-     # - name: Ensure permissions on yarn.lock
-      #  run: chmod 644 yarn.lock
+      - name: Ensure permissions dependency-check
+        run: chmod 644 dependency-check.sh
 
       - name: Build
         run: |
@@ -107,6 +107,12 @@ jobs:
         env:
           CI: true
 
+     - name: Upload npm audit report
+        uses: actions/upload-artifact@v2
+        with:
+          name: npm-audit-report
+          path: ${{ github.workspace }}/
+
       - name: Install OWASP Dependency-Check
         run: |
           curl -LJO https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.3/dependency-check-6.5.3-release.zip
@@ -117,7 +123,7 @@ jobs:
 
       - name: Run OWASP Dependency-Check
         run: |
-          dependency-check --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/" --scan .
+          dependency-check --scan . --project "${{ github.repository.name }}" --out "${{ github.workspace }}/"
         
       - name: Upload Dependency-Check report
         uses: actions/upload-artifact@master
@@ -125,11 +131,7 @@ jobs:
           name: Depcheck report
           path: ${{ github.workspace }}/
 
-      - name: Upload npm audit report
-        uses: actions/upload-artifact@v2
-        with:
-          name: npm-audit-report
-          path: ${{ github.workspace }}/
+     
 
       
       - name: Upload Artifact (built application)
