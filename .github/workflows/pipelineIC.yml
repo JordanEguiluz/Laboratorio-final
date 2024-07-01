@@ -147,10 +147,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set PowerShell Execution Policy
-      run: Set-ExecutionPolicy RemoteSigned -Scope Process -Force
-      shell: pwsh
-
     - name: Build
       run: npm run build
 
