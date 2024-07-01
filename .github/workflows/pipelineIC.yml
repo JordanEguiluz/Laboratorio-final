@@ -170,7 +170,7 @@ jobs:
 
     - name: Build Docker
       run: |
-        IMAGE_NAMEN=alucard2396/laboratorio-final:latest
+        IMAGEN_NAMEN=alucard2396/laboratorio-final:latest
         echo "Se construye la imagen de Docker $IMAGEN_NAME"
         docker build --tag IMAGEN_NAME .
       env:
