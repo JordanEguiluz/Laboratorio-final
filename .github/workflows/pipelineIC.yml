@@ -142,7 +142,6 @@ jobs:
 
 #---------------------Docker Build Image------------------------------------------------------------------------------------
   DockerBuild:
-#   needs: SCA
     runs-on: self-hosted
     steps:   
     - name: Checkout code
