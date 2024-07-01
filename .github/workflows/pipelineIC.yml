@@ -90,7 +90,7 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '20' # Ajusta la versión de Node.js según sea necesario
+        node-version: '20' 
         cache: 'npm'  
 
     - name: Install dependencies
@@ -170,11 +170,16 @@ jobs:
 
     - name: Build Docker
       run: |
-        ls -R
-        docker build --tag alucard2396/laboratorio-final:latest .
+        IMAGE_NAMEN=alucard2396/laboratorio-final:latest
+        echo "Se construye la imagen de Docker $IMAGEN_NAME"
+        docker build --tag IMAGEN_NAME .
+      env:
+        DOCKER_BUILDKIT: 1
 
     - name: Push Docker
       run: | 
-        docker push alucard2396/laboratorio-final:latest
+        IMAGE_NAMEN=alucard2396/laboratorio-final:latest
+        echo "Se sube la imagen de Docker $IMAGEN_NAME"
+        docker push $IMAGEN_NAME
 
 #---------------------------Docker Scan-----------------------------------------------
