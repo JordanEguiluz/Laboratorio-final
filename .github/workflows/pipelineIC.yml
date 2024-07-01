@@ -144,8 +144,7 @@ jobs:
   DockerBuild:
 #   needs: SCA
     runs-on: self-hosted
-    steps:
-    
+    steps:   
     - name: Checkout code
       uses: actions/checkout@v2
 
