@@ -170,16 +170,16 @@ jobs:
 
     - name: Build Docker
       run: |
-        IMAGEN_NAMEN=alucard2396/laboratorio-final:latest
-        echo "Se construye la imagen de Docker $IMAGEN_NAME"
-        docker build --tag IMAGEN_NAME .
+        IMAGE_NAME=alucard2396/laboratorio-final:latest
+        echo "Se construye la imagen de Docker $IMAGE_NAME"
+        docker build --tag IMAGE_NAME .
       env:
         DOCKER_BUILDKIT: 1
 
     - name: Push Docker
       run: | 
-        IMAGE_NAMEN=alucard2396/laboratorio-final:latest
-        echo "Se sube la imagen de Docker $IMAGEN_NAME"
-        docker push $IMAGEN_NAME
+        IMAGE_NAME=alucard2396/laboratorio-final:latest
+        echo "Se sube la imagen de Docker $IMAGE_NAME"
+        docker push $IMAGE_NAME
 
 #---------------------------Docker Scan-----------------------------------------------
