@@ -75,7 +75,6 @@ jobs:
         id: Sonarqube
         uses: sonarsource/sonarcloud-github-action@master
         with:
-          args: 'sonar.qualitygate.wait=true'
           scanMetadataReportFile: './.scannerwork/report-task.txt'
         env: 
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
