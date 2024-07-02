@@ -32,9 +32,6 @@ jobs:
       #- name: Build
       #  run: npm run build
 
-      - name: Remove yarn.lock para evitar conflictos
-        run: rm -f yarn.lock
-
       - name: Validando existencia de proyecto en SonarCloud
         id: validateProjectOnSonar
         run: |
@@ -73,7 +70,7 @@ jobs:
     
       - name: Validate Quality Gate
         run: |
-          idanalisis=$(curl -f -X POST -u ${{ secrets.SONAR_TOKEN }}: 'https://sonarcloud.io/api/ce/component?curso-devsecops-pipeline')
+          idanalisis=$(curl -f -X POST -u ${{ secrets.SONAR_TOKEN }}: 'https://sonarcloud.io/api/ce/component?Laboratorio-final')
           idanalisisParse=$(echo "$idanalisis" | jq .current.analysisId | sed -e 's/^"//' -e 's/"$//')
     
           qualitygate=$(curl -f -X POST -u ${{ secrets.SONAR_TOKEN }}: 'https://sonarcloud.io/api/qualitygates/project_status?analysisId=$idanalisisParse')
