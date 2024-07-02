@@ -89,7 +89,8 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '18' 
+        node-version: '18'
+        cache: npm 
 
     #- name: Run npm audit fix
     #  run: npm audit fix
@@ -143,7 +144,7 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '16' # Ajusta la versión de Node.js según sea necesario
-        #cache: 'npm' 
+        cache: 'npm' 
 
     - name: Docker Login
       uses: docker/login-action@v3.0.0
@@ -152,8 +153,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build Docker
-      run: |
-        
+      run: | 
         docker build --build-arg TMDB_V3_API_KEY=${{ secrets.TMDB_V3_API_KEY }} --tag alucard2396/laboratorio-final:latest .
         echo "Se construye la imagen de Docker"
         ls -R
@@ -167,32 +167,32 @@ jobs:
 
 #---------------------------Docker Scan-----------------------------------------------
 
-#  DockerScan:
-#    needs: DockerBuild
-#    runs-on: ubuntu-latest
-#    steps:
-#    
-#    - name: Docker Login
-#      uses: docker/login-action@v3.0.0
-#      with:
-#        username: ${{ secrets.DOCKER_USER }}
-#        password: ${{ secrets.DOCKER_PASSWORD }}
-#
-#    - name: Pull de la Imagen Docker
-#      run: |
-#        docker pull alucard2396/laboratorio-final:latest
-#    
-#    - name: Run Trivy vulnerability scanner
-#      uses: aquasecurity/trivy-action@master
-#      with:
-#        image-ref: 'alucard2396/laboratorio-final:latest'
-#        format: 'table'
-#        severity: CRITICAL
-#    
-#    - name: ls
-#      run: | 
-#        ls -R
-#    
-#    - name: Push Docker
-#      run: | 
-#        docker push alucard2396/laboratorio-final:latest
+  DockerScan:
+    needs: DockerBuild
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Docker Login
+      uses: docker/login-action@v3.0.0
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Pull de la Imagen Docker
+      run: |
+        docker pull alucard2396/laboratorio-final:latest
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'alucard2396/laboratorio-final:latest'
+        format: 'table'
+        severity: CRITICAL
+    
+    - name: ls
+      run: | 
+        ls -R
+    
+    - name: Push Docker
+      run: | 
+        docker push alucard2396/laboratorio-final:latest
