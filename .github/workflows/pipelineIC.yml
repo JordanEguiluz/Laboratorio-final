@@ -241,7 +241,7 @@ jobs:
     - name: Check for High Severity Vulnerabilities
       run: |
         # Check if OWAZAP Encuentra alguna severidad alta
-        if grep -q 'High' zap_report.html; then
+        if grep -q 'High' DAST_OWZAP_report.html; then
           echo "High severity vulnerabilities found in OWAZAP scan."
           exit 1
         else
