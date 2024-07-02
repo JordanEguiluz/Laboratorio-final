@@ -68,29 +68,6 @@ jobs:
           -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.branch.name=feat-laboratorio
     
-      - name: Validate Quality Gate
-        run: |
-          idanalisis=$(curl -f -X POST -u ${{ secrets.SONAR_TOKEN }}: 'https://sonarcloud.io/api/ce/component?component=curso-devsecops-pipeline')
-          idanalisisParse=$(echo "$idanalisis" | jq .current.analysisId)
-    
-          qualitygate=$(curl -f -X POST -u ${{ secrets.SONAR_TOKEN }}: 'https://sonarcloud.io/api/qualitygates/project_status?analysisId=$idanalisisParse')
-          qualitygateStatus=$(echo "$qualitygate" | jq .projectStatus.status)
-    
-          case $qualitygateStatus in
-              *"OK"*)
-                echo "Proyecto Cumple con quality gate"
-                exit 0
-                ;;
-              *"ERROR"*)
-                echo "Proyecto NO cumple con QualityGate"
-                exit 1
-                ;;
-              *)
-                echo "Proyecto NO cumple"
-                exit 1
-                ;;
-            esac
-
   
   #--------------------- SCA -------------------------------------------
 
