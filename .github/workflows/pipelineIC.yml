@@ -187,7 +187,9 @@ jobs:
       with:
         image-ref: 'alucard2396/laboratorio-final:latest'
         format: 'table'
-        severity: CRITICAL
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH,MODARATE'
     
     - name: ls
       run: | 
@@ -196,3 +198,17 @@ jobs:
     - name: Push Docker
       run: | 
         docker push alucard2396/laboratorio-final:latest
+#------------------------Deploy APP---------------------------------------------------
+
+  Deploy:
+    needs: DockerScan
+    runs-on: self-hosted
+    steps:
+      - name: Clonacion del Codigo
+        uses: actions/checkout@v4
+
+      - name: Despliegue
+        run: |
+          kubectl apply -f ./kubernetes/deployment.yml
+
+
