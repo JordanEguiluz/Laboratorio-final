@@ -72,11 +72,12 @@ jobs:
           -Dsonar.branch.name=feat-laboratorio
 
       - name: SonarQube Quality Gate Check
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
         with:
           scanMetadataReportFile: './.scannerwork/report-task.txt'
-        env: 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
 
   #--------------------- SCA -------------------------------------------
 
