@@ -154,7 +154,7 @@ jobs:
     - name: Build Docker
       run: |
         
-        docker build --build-arg TMDB_V3_API_KEY=${{ secrets.TMDB_API_KEY }} --tag alucard2396/laboratorio-final:latest .
+        docker build --build-arg TMDB_V3_API_KEY=${{ secrets.TMDB_V3_API_KEY }} --tag alucard2396/laboratorio-final:latest .
         echo "Se construye la imagen de Docker"
         ls -R
       env:
