@@ -21,8 +21,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
-          cache: 'npm'
+          node-version: '18'
         
       - name: Checkout code
         uses: actions/checkout@v2
@@ -90,8 +89,7 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16' 
-        cache: 'npm'  
+        node-version: '18' 
 
     - name: Install dependencies
       run: npm install
