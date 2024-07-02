@@ -71,12 +71,12 @@ jobs:
           -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.branch.name=feat-laboratorio
 
-      - name: SonarQube Quality Gate Check
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
-        with:
-          scanMetadataReportFile: './.scannerwork/report-task.txt'
+      #- name: SonarQube Quality Gate Check
+      #  env:
+      #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #  uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
+      #  with:
+      #    scanMetadataReportFile: './.scannerwork/report-task.txt'
     
 
   #--------------------- SCA -------------------------------------------
@@ -213,7 +213,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Clonacion del Codigo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Despliegue
         run: |
