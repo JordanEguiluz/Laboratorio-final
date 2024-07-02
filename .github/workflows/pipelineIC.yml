@@ -70,16 +70,31 @@ jobs:
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.branch.name=feat-laboratorio
-
-      - name: SonarQube Quality Gate Check
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
-        with:
-          scanMetadataReportFile: './.scannerwork/report-task.txt'
     
+      - name: Validate Quality Gate
+        run: |
+          idanalisis=$(curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/ce/component?pet-clinic')
+          idanalisisParse=$(echo "$idanalisis" | jq .current.analysisId | sed -e 's/^"//' -e 's/"$//')
+    
+          qualitygate=$(curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/qualitygates/project_status?analysisId=$idanalisisParse')
+          qualitygateStatus=$(echo "$qualitygate" | jq .projectStatus.status | sed -e 's/^"//' -e 's/"$//')
+    
+          case $qualitygateStatus in
+              *"OK"*)
+                echo "Proyecto Cumple con quality gate"
+                exit 0
+                ;;
+              *"ERROR"*)
+                echo "Proyecto NO cumple con QualityGate"
+                exit 1
+                ;;
+              *)
+                echo "Proyecto NO cumple"
+                exit 1
+                ;;
+            esac
 
+  
   #--------------------- SCA -------------------------------------------
 
   SCA:
@@ -233,7 +248,7 @@ jobs:
         docker run -d --name netflix-app -p 8080:80 alucard2396/laboratorio-final:latest
         sleep 15 # Give the application some time to start
 
-    - name: ZAP Scan
+    - name: DAST Scan
       uses: zaproxy/action-baseline@v0.12.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -243,20 +258,20 @@ jobs:
         cmd_options: '-a'
         allow_issue_writing: false
 
-    - name: Upload ZAP Report
+    - name: Upload DAST Report
       uses: actions/upload-artifact@v2
       with:
-        name: zap-report
-        path: zap_report.html
+        name: DAST-report
+        path: DAST_OWZAP_report.html
 
     - name: Check for High Severity Vulnerabilities
       run: |
-        # Check if ZAP found any high severity issues
+        # Check if OWAZAP Encuentra alguna severidad alta
         if grep -q 'High' zap_report.html; then
-          echo "High severity vulnerabilities found in ZAP scan."
+          echo "High severity vulnerabilities found in OWAZAP scan."
           exit 1
         else
-          echo "No high severity vulnerabilities found in ZAP scan."
+          echo "No high severity vulnerabilities found in OWAZAP scan."
         fi
 
 
