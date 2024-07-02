@@ -73,7 +73,7 @@ jobs:
     
       - name: Validate Quality Gate
         run: |
-          idanalisis=$(curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/ce/component?Laboratorio-final')
+          idanalisis=$(curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/ce/component?curso-devsecops-pipeline')
           idanalisisParse=$(echo "$idanalisis" | jq .current.analysisId | sed -e 's/^"//' -e 's/"$//')
     
           qualitygate=$(curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/qualitygates/project_status?analysisId=$idanalisisParse')
