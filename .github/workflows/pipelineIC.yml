@@ -1,0 +1,252 @@
+name: workflows
+
+on:
+  push:
+    branches:
+      - feat-laboratorio
+
+jobs:        
+  SAST:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+        
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      #- name: Install dependencies
+      #  run: npm install
+
+      #- name: Build
+      #  run: npm run build
+
+      - name: Validando existencia de proyecto en SonarCloud
+        id: validateProjectOnSonar
+        run: |
+          set +e
+          curl -f -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/projects/create' \
+            -d 'name=${{ github.event.repository.name }}' \
+            -d 'project=${{ github.event.repository.name }}' \
+            -d 'organization=curso-devsecops-pipeline' \
+            -d 'visibility=public'
+          if [ $? -ne 0 ]; then
+            echo "Proyecto ya existe en Sonarcloud"
+            echo "proyectoExiste=1" >> $GITHUB_ENV
+          else
+            echo "Proyecto ${{ github.event.repository.name }} creado exitosamente en Sonarcloud"
+            
+            echo "Se establece rama main como rama por defecto"
+            curl -X POST -u '${{ secrets.SONAR_TOKEN }}:' 'https://sonarcloud.io/api/project_branches/rename' \
+              -d 'name=feat-laboratorio' \
+              -d 'project=${{ github.event.repository.name }}'
+          fi
+          set -e
+
+      - name: Install SonarCloud Scanner locally
+        run: npm install sonar-scanner --save-dev
+
+      - name: SonarQube Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          ./node_modules/.bin/sonar-scanner -X \
+          -Dsonar.projectKey=${{ github.event.repository.name }} \
+          -Dsonar.organization=curso-devsecops-pipeline \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+          -Dsonar.branch.name=feat-laboratorio
+    
+  
+  #--------------------- SCA -------------------------------------------
+
+  SCA:
+    needs: SAST
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'adopt'
+
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+        cache: npm 
+
+    #- name: Run npm audit fix
+    #  run: npm audit fix
+
+    #- name: Run npm audit
+    #  run: npm audit --audit-level=high
+    #  env:
+    #    CI: true
+
+    - name: Remove yarn.lock para evitar conflictos
+      run: rm -f yarn.lock
+
+    - name: Install OWASP Dependency-Check
+      run: |
+        curl -LJO https://github.com/jeremylong/DependencyCheck/releases/download/v8.2.0/dependency-check-8.2.0-release.zip
+        unzip dependency-check-8.2.0-release.zip -d dependency-check 
+
+    - name: Debug - List files in dependency-check directory
+      run: ls -la dependency-check
+
+    - name: Run OWASP Dependency-Check
+      run: |
+        ./dependency-check/dependency-check/bin/dependency-check.sh --scan . --project "${{ github.repository }}" --out "${{ github.workspace }}/reports" \
+        --disableAssembly --disablePyDist --disableNodeAudit --disableCentral --disableNuspec 
+      # disable se desahabilitaron disparadores no necesarios para el proyecto 
+      # ruta correcta para hacer el scan ./dependency-check/dependency-check/bin/dependency-check.sh
+
+    - name: Debug - List files in reports directory
+      run: ls -la ${{ github.workspace }}/reports
+
+    #- name: Upload npm audit report
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: npm-audit-report
+    #    path: ${{ github.workspace }}/dist
+
+    - name: Upload Dependency-Check report
+      uses: actions/upload-artifact@v2
+      with:
+        name: Depcheck report
+        path: ${{ github.workspace }}/reports
+
+#---------------------Docker Build Image------------------------------------------------------------------------------------
+  DockerBuild:
+    runs-on: self-hosted
+    steps:   
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16' # Ajusta la versión de Node.js según sea necesario
+        cache: 'npm' 
+
+    - name: Docker Login
+      uses: docker/login-action@v3.0.0
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker
+      run: | 
+        docker build --build-arg TMDB_V3_API_KEY=${{ secrets.TMDB_V3_API_KEY }} --tag alucard2396/laboratorio-final:latest .
+        echo "Se construye la imagen de Docker"
+        ls -R
+      env:
+        DOCKER_BUILDKIT: 1
+
+    - name: Push Docker
+      run: | 
+        docker push alucard2396/laboratorio-final:latest
+        echo "Se sube la imagen de Docker"
+
+#---------------------------Docker Scan-----------------------------------------------
+
+  DockerScan:
+    needs: DockerBuild
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Docker Login
+      uses: docker/login-action@v3.0.0
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Pull de la Imagen Docker
+      run: |
+        docker pull alucard2396/laboratorio-final:latest
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'alucard2396/laboratorio-final:latest'
+        format: 'table'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH,MEDIUM'
+    
+    - name: ls
+      run: | 
+        ls -R
+    
+    - name: Push Docker
+      run: | 
+        docker push alucard2396/laboratorio-final:latest
+#------------------------Deploy APP---------------------------------------------------
+
+  Deploy:
+    needs: DockerScan
+    runs-on: self-hosted
+    steps:
+      - name: Clonacion del Codigo
+        uses: actions/checkout@v3
+
+      - name: Despliegue
+        run: |
+          kubectl apply -f ./Kubernetes/deployment.yml
+
+#-----------------------DAST (OWASP ZAP)-------------------------------------
+  DAST:
+    needs: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Start Application
+      run: |
+        docker run -d --name netflix-app -p 8080:80 alucard2396/laboratorio-final:latest
+        sleep 15 # Give the application some time to start
+
+    - name: DAST Scan
+      uses: zaproxy/action-baseline@v0.12.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
+        target: 'http://localhost:8080'
+        rules_file_name: '.zap/rules.tsv'
+        cmd_options: '-a'
+        allow_issue_writing: false
+
+    - name: Upload DAST Report
+      uses: actions/upload-artifact@v2
+      with:
+        name: DAST-report
+        path: DAST_OWZAP_report.html
+
+    - name: Check for High Severity Vulnerabilities
+      run: |
+        # Check if OWAZAP Encuentra alguna severidad alta
+        if grep -q 'High' DAST_OWZAP_report.html; then
+          echo "High severity vulnerabilities found in OWAZAP scan."
+          exit 1
+        else
+          echo "No high severity vulnerabilities found in OWAZAP scan."
+        fi
+
+
+
