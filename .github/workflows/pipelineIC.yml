@@ -68,11 +68,25 @@ jobs:
           -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.branch.name=feat-laboratorio
 
-      - name: Upload SonarQube report
+      - name: Wait for SonarQube Analysis
+        run: sleep 70  # Ajusta este tiempo según sea necesario
+
+      - name: Fetch SonarQube Report
+        run: |
+          analysis_id=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "https://sonarcloud.io/api/ce/component?component=${{ github.event.repository.name }}" | jq -r '.current.analysisId')
+          curl -s -u "${{ secrets.SONAR_TOKEN }}:" "https://sonarcloud.io/api/qualitygates/project_status?analysisId=${analysis_id}" -o sonar-report.json
+
+      - name: Upload SonarQube Report
         uses: actions/upload-artifact@v2
         with:
           name: sonar-report
-          path: ${{ github.workspace }}/
+          path: sonar-report.json
+
+      #- name: Upload SonarQube report
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    name: sonar-report
+      #    path: ${{ github.workspace }}/
     
   
   #--------------------- SCA -------------------------------------------
