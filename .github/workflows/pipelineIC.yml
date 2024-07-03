@@ -72,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: sonar-report
-          path: ./sonar-report.json 
+          path: ${{ github.workspace }}/sonar-report
     
   
   #--------------------- SCA -------------------------------------------
