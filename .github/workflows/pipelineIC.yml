@@ -68,7 +68,7 @@ jobs:
           -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.branch.name=feat-laboratorio
 
-     - name: Upload SonarQube report
+      - name: Upload SonarQube report
         uses: actions/upload-artifact@v2
         with:
           name: sonar-report
